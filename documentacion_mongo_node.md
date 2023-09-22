@@ -117,3 +117,57 @@ db.automovil.aggregate([
 3. **`$project`**: Esta operación selecciona los campos que se incluirán en el resultado final. En este caso, se excluye el campo '_id' del resultado y los campos del subdocumento 'data_Alquiler'.
 
 Esta consulta devuelve una lista de automóviles disponibles con una capacidad de 5 o más, excluyendo los campos innecesarios del resultado.
+
+
+# Manejo de inicio de sesión y roles en MongoDB
+
+MongoDB permite la creación de usuarios y roles para gestionar el acceso a la base de datos. A continuación, se detalla cómo se pueden manejar estos aspectos.
+
+## Creación de usuarios
+
+Para crear un usuario en MongoDB, se utiliza el método `db.createUser()`. Este método toma un documento que especifica el nombre de usuario, la contraseña y los roles. Aquí hay un ejemplo de cómo crear un usuario sin ningún rol:
+
+```javascript
+db.createUser({
+    user: "tom",
+    pwd: passwordPrompt(),
+    roles: []
+})
+```
+
+Para ver los usuarios existentes, puedes usar el método `db.getUsers()`.
+
+## Creación de roles
+
+Los roles en MongoDB pueden ser roles incorporados o roles definidos por el usuario. Un rol incorporado es un rol predefinido que viene con MongoDB. Un rol definido por el usuario es un rol creado por el usuario.
+
+Para crear un rol, puedes usar el método `db.createRole()`. Este método toma un documento que especifica el nombre del rol, los privilegios y los roles heredados. Aquí hay un ejemplo de cómo crear un rol:
+
+```javascript
+db.createRole({
+    role: "manageOpRole",
+    privileges: [
+        { resource: { anyResource: true }, actions: [ "anyAction" ] }
+    ],
+    roles: []
+})
+```
+
+Para ver los roles existentes, puedes usar el método `db.getRoles()`.
+
+## Asignación de roles a usuarios
+
+Para asignar un rol a un usuario, puedes usar el método `db.grantRolesToUser()`. Este método toma el nombre del usuario y una matriz de roles. Aquí hay un ejemplo de cómo asignar un rol a un usuario:
+
+```javascript
+db.grantRolesToUser(
+    "tom",
+    [ "manageOpRole" ]
+)
+```
+
+Para ver los roles asignados a un usuario, puedes usar el método `db.getUser()`.
+
+## Control de acceso basado en roles (RBAC)
+
+MongoDB utiliza un modelo de control de acceso basado en roles (RBAC). En este sistema, diferentes niveles de acceso están asociados con roles individuales. Para dar permiso a un usuario para realizar una acción, le concedes la pertenencia a un rol que tiene los privilegios apropiados.
